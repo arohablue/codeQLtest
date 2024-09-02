@@ -9,8 +9,8 @@ class PostDatabase:
         Fetches posts from the database based on postid.
         Uses string formatting which can be vulnerable to SQL injection.
 
-        Args:
-        postid (int): The ID of the post.
+        Args:  
+        postid (int): The ID of the post. 
 
         Returns:
         list: A list of tuples containing user names and post comments.
