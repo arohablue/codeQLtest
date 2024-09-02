@@ -1,0 +1,55 @@
+import sqlite3
+
+class PostDatabase:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+
+    def getPostsByPostid(self, postid):
+        """
+        Fetches posts from the database based on postid.
+        Uses string formatting which can be vulnerable to SQL injection.
+
+        Args:
+        postid (int): The ID of the post.
+
+        Returns:
+        list: A list of tuples containing user names and post comments.
+        """
+        sqlText = """
+        SELECT users.name, post.comment 
+        FROM users 
+        JOIN post ON users.userid = post.userid 
+        WHERE post.postid = %d
+        """ % postid
+        return self.queryDB(sqlText)
+
+    def queryDB(self, sqlText):
+        """
+        Executes a query on the database and fetches the results.
+
+        Args:
+        sqlText (str): The SQL query to be executed.
+
+        Returns:
+        list: A list of tuples containing the results of the query.
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(sqlText)
+        results = cursor.fetchall()
+        cursor.close()
+        return results
+
+    def close(self):
+        """
+        Closes the database connection.
+        """
+        self.conn.close()
+
+# Example usage:
+if __name__ == "__main__":
+    db = PostDatabase('example.db')
+    postid = 1
+    posts = db.getPostsByPostid(postid)
+    for post in posts:
+        print(f"User: {post[0]}, Comment: {post[1]}")
+    db.close()
